@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+:root {
+  accent-color: oklch(0.879 0.169 91.605);
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(45deg, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789);
+}
+
+input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  border: 2px solid oklch(0.879 0.169 91.605);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+input[type="checkbox"]:checked {
+  background-color: oklch(0.879 0.169 91.605);
+  border-color: oklch(0.879 0.169 91.605);
+}
+
+input[type="checkbox"]:hover {
+  transform: scale(1.1);
+}
