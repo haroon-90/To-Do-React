@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Navbar from './components/navbar'
 import Footer from './components/footer'
 import './App.css'
@@ -16,7 +16,7 @@ function App() {
   }, []);
 
   const toggleComplete = (e) => {
-    setShowCompleted(e.target.checked); // Checkbox check/uncheck hone pe state update hogi
+    setShowCompleted(e.target.checked); // update state on check/uncheck of checkbox
   };
 
   const filteredTodos = showCompleted ? todos : todos.filter(todo => !todo.iscompleted);
@@ -29,13 +29,19 @@ function App() {
     }
   }, [])
 
-  useEffect(() => {
-    if (todos.length > 0) { // Only save when todos are not empty
-      localStorage.setItem('todos', JSON.stringify(todos));
+  const handleKeyPress = useCallback((e) => {
+    if (e.key === "Enter") {
+      handleAdd();
     }
-  }, [todos]);
+  }, [todo]);
 
-
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyPress);
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [handleKeyPress]);
+  
   const handleAdd = () => {
     if (!todo.trim()) {
       alert("Task cannot be empty!");
@@ -82,7 +88,6 @@ function App() {
     localStorage.setItem("todos", JSON.stringify(newtodos));
   };
 
-
   return (
     <>
       <div id="main"></div>
@@ -99,7 +104,7 @@ function App() {
               value={todo}
               ref={inputRef}
               onChange={handlechange}
-              className='new</main>task border border-gray-500 rounded-lg p-2 mr-2 w-64 focus:outline-none focus:border-blue</div>-500'
+              className='newtask border border-gray-500 rounded-lg p-2 mr-2 focus:outline-none focus:border-blue max-w-[50%] min-w-[50%] focus:ring-2 focus:ring-blue-500'
             />
             <button className='bg-indigo-700 text-white px-4 py-2 rounded-lg hover:bg-amber-300 transition-colors' onClick={handleAdd}>
               Save

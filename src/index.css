@@ -6,7 +6,7 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(45deg, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789);
+  background: linear-gradient(90deg, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff, #ffe789, #8fb1ff);
 }
 
 input[type="checkbox"] {
