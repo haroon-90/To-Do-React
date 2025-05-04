@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Navbar from './components/navbar'
 import Footer from './components/footer'
+import Edit_icon from './assets/edit.svg'
+import Delete_icon from './assets/delete.svg'
 import './App.css'
 import { v4 as uuidv4 } from 'uuid';
 
@@ -121,14 +123,14 @@ function App() {
           {filteredTodos.map(items => {
             return (
               <div key={items.id} className="todoscontainer m-2 p-2 mx-auto flex justify-between items-center">
-                <div>
-                  <input checked={items.iscompleted} onChange={handlecheckbox} type="checkbox" name={items.id} id="" className='mr-2' />
-                  <span className={items.iscompleted ? "line-through" : ""} name="todo">{items.todo}</span>
-                </div>
-                <div className='flex gap-2'>
-                  <img alt='edit' src='/edit.svg' title='Edit' className='h-[2.5rem] bg-indigo-700 text-white px-4 py-2 rounded-lg hover:bg-amber-300 transition-colors' onClick={(e) => { handleEdit(e, items.id) }}></img>
-                  <img alt='delete' src='/delete.svg' title='Delete' className='h-[2.5rem] bg-indigo-700 text-white px-4 py-2 rounded-lg hover:bg-amber-300 transition-colors' onClick={(e) => { handleDelete(e, items.id) }}></img>
-                </div>
+              <div>
+                <input checked={items.iscompleted} onChange={handlecheckbox} type="checkbox" name={items.id} id="" className='mr-2' />
+                <span className={items.iscompleted ? "line-through" : ""} name="todo">{items.todo}</span>
+              </div>
+              <div className='flex gap-2'>
+                <img alt='edit' src={Edit_icon} title='Edit' className='h-[2.5rem] bg-indigo-700 text-white px-4 py-2 rounded-lg hover:bg-amber-300 transition-colors' onClick={(e) => { handleEdit(e, items.id) }}></img>
+                <img alt='delete' src={Delete_icon} title='Delete' className='h-[2.5rem] bg-indigo-700 text-white px-4 py-2 rounded-lg hover:bg-amber-300 transition-colors' onClick={(e) => { handleDelete(e, items.id) }}></img>
+              </div>
               </div>
             )
           })}
