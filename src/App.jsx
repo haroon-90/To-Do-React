@@ -7,88 +7,81 @@ import './App.css'
 import { v4 as uuidv4 } from 'uuid';
 
 function App() {
+const [todo, setTodo] = useState("");
+const [todos, setTodos] = useState(() => {
+  const savedTodos = localStorage.getItem("todos");
+  return savedTodos ? JSON.parse(savedTodos) : [];
+});
+const [showCompleted, setShowCompleted] = useState(false);
+const inputRef = useRef(null);
 
-  const [todo, setTodo] = useState("");
-  const [todos, setTodos] = useState([]);
-  const [showCompleted, setShowCompleted] = useState(false);
-  const inputRef = useRef(null);
+// Focus input on load
+useEffect(() => {
+  inputRef.current.focus();
+}, []);
 
-  useEffect(() => {
-    inputRef.current.focus();  // Auto-focus when component loads
-  }, []);
+// Save todos to localStorage whenever they change
+useEffect(() => {
+  localStorage.setItem("todos", JSON.stringify(todos));
+}, [todos]);
 
-  const toggleComplete = (e) => {
-    setShowCompleted(e.target.checked); // update state on check/uncheck of checkbox
+const toggleComplete = (e) => {
+  setShowCompleted(e.target.checked);
+};
+
+const filteredTodos = showCompleted ? todos : todos.filter(todo => !todo.iscompleted);
+
+const handleKeyPress = useCallback((e) => {
+  if (e.key === "Enter") {
+    handleAdd();
+  }
+}, [todo, todos]);
+
+useEffect(() => {
+  document.addEventListener("keydown", handleKeyPress);
+  return () => {
+    document.removeEventListener("keydown", handleKeyPress);
   };
+}, [handleKeyPress]);
 
-  const filteredTodos = showCompleted ? todos : todos.filter(todo => !todo.iscompleted);
+const handleAdd = () => {
+  if (!todo.trim()) {
+    alert("Task cannot be empty!");
+    return;
+  }
+  setTodos([...todos, { todo, id: uuidv4(), iscompleted: false }]);
+  setTodo("");
+  inputRef.current.focus();
+};
 
-  useEffect(() => {
-    let todostring = localStorage.getItem("todos");
-    if (todostring) {
-      let todos = JSON.parse(todostring);
-      setTodos(todos);
-    }
-  }, [])
+const handlechange = (e) => {
+  setTodo(e.target.value);
+};
 
-  const handleKeyPress = useCallback((e) => {
-    if (e.key === "Enter") {
-      handleAdd();
-    }
-  }, [todo]);
+const handlecheckbox = (e) => {
+  const id = e.target.name;
+  const updatedTodos = todos.map(item =>
+    item.id === id ? { ...item, iscompleted: !item.iscompleted } : item
+  );
+  setTodos(updatedTodos);
+};
 
-  useEffect(() => {
-    document.addEventListener("keydown", handleKeyPress);
-    return () => {
-      document.removeEventListener("keydown", handleKeyPress);
-    };
-  }, [handleKeyPress]);
-  
-  const handleAdd = () => {
-    if (!todo.trim()) {
-      alert("Task cannot be empty!");
-      return;
-    }
-    setTodos([...todos, { todo, id: uuidv4(), iscompleted: false }]);
-    setTodo("");
-    inputRef.current.focus();
-  };
+const handleEdit = (e, id) => {
+  const itemToEdit = todos.find(i => i.id === id);
+  setTodo(itemToEdit.todo);
+  const updatedTodos = todos.filter(item => item.id !== id);
+  setTodos(updatedTodos);
+  inputRef.current.focus();
+};
 
-  const handlechange = (e) => {
-    setTodo(e.target.value);
-  };
-
-  const handlecheckbox = (e) => {
-    let id = e.target.name;
-    let index = todos.findIndex(item => {
-      return item.id === id;
-    })
-    let newtodos = [...todos];
-    newtodos[index].iscompleted = !newtodos[index].iscompleted;
-    setTodos(newtodos);
-  };
-
-  const handleEdit = (e, id) => {
-    let t = todos.filter(i => i.id === id);
-    setTodo(t[0].todo)
-    let newtodos = todos.filter((item) => {
-      return item.id !== id;
-    });
-    setTodos(newtodos);
-    inputRef.current.focus();
-  };
-
-  const handleDelete = (e, id) => {
-    let newtodos = todos.filter((item) => {
-      return item.id !== id;
-    });
-    if (!confirm("Are you sure you want to delete this task?")) {
-      return;
-    }
-    setTodos(newtodos);
-    inputRef.current.focus();
-    localStorage.setItem("todos", JSON.stringify(newtodos));
-  };
+const handleDelete = (e, id) => {
+  if (!confirm("Are you sure you want to delete this task?")) {
+    return;
+  }
+  const updatedTodos = todos.filter(item => item.id !== id);
+  setTodos(updatedTodos);
+  inputRef.current.focus();
+};
 
   return (
     <>
@@ -123,14 +116,14 @@ function App() {
           {filteredTodos.map(items => {
             return (
               <div key={items.id} className="todoscontainer m-2 p-2 mx-auto flex justify-between items-center">
-              <div>
-                <input checked={items.iscompleted} onChange={handlecheckbox} type="checkbox" name={items.id} id="" className='mr-2' />
-                <span className={items.iscompleted ? "line-through" : ""} name="todo">{items.todo}</span>
-              </div>
-              <div className='flex gap-2'>
-                <img alt='edit' src={Edit_icon} title='Edit' className='h-[2.5rem] bg-indigo-700 text-white px-4 py-2 rounded-lg hover:bg-amber-300 transition-colors' onClick={(e) => { handleEdit(e, items.id) }}></img>
-                <img alt='delete' src={Delete_icon} title='Delete' className='h-[2.5rem] bg-indigo-700 text-white px-4 py-2 rounded-lg hover:bg-amber-300 transition-colors' onClick={(e) => { handleDelete(e, items.id) }}></img>
-              </div>
+                <div>
+                  <input checked={items.iscompleted} onChange={handlecheckbox} type="checkbox" name={items.id} id="" className='mr-2' />
+                  <span className={items.iscompleted ? "line-through" : ""} name="todo">{items.todo}</span>
+                </div>
+                <div className='flex gap-2'>
+                  <img alt='edit' src={Edit_icon} title='Edit' className='h-[2.5rem] bg-indigo-700 text-white px-4 py-2 rounded-lg hover:bg-amber-300 transition-colors' onClick={(e) => { handleEdit(e, items.id) }}></img>
+                  <img alt='delete' src={Delete_icon} title='Delete' className='h-[2.5rem] bg-indigo-700 text-white px-4 py-2 rounded-lg hover:bg-amber-300 transition-colors' onClick={(e) => { handleDelete(e, items.id) }}></img>
+                </div>
               </div>
             )
           })}
